@@ -16,7 +16,12 @@ START_PAGE=1
 TIMEOUT = 20 # seconds, browser timetout
 PAGESIZE=100
 
-prefix_url = "https://iworkfor.nsw.gov.au/jobs/all-keywords/all-agencies/all-organisations--entities/all-categories/all-locations/all-worktypes?pagesize={}&page=".format(str(PAGESIZE))
+# all jobs
+#prefix_url = "https://iworkfor.nsw.gov.au/jobs/all-keywords/all-agencies/all-organisations--entities/all-categories/all-locations/all-worktypes?pagesize={}&page=".format(str(PAGESIZE))
+
+# job that over 100k
+prefix_url = "https://iworkfor.nsw.gov.au/jobs/all-keywords/all-agencies/all-organisations--entities/all-categories/all-locations/all-worktypes?salaryrangeid=8,9,10,11,12,13,14&pagesize={}&page=".format(str(PAGESIZE))
+
 
 ## browser set up
 CHROME_LOCATION = "C:/Users/rfzheng/Desktop/1/chromedriver_win32/chromedriver"
