@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
+import random
 import time
 import urllib2
 from math import ceil
@@ -15,6 +16,10 @@ START_PAGE=1
 
 TIMEOUT = 20 # seconds, browser timetout
 PAGESIZE=100
+
+## delay for crawling child pages, random ranges(A, B)
+DELAY_A = 5			
+DELAY_B = 12
 
 # all jobs
 #prefix_url = "https://iworkfor.nsw.gov.au/jobs/all-keywords/all-agencies/all-organisations--entities/all-categories/all-locations/all-worktypes?pagesize={}&page=".format(str(PAGESIZE))
@@ -98,6 +103,10 @@ def parse_title():
 def pasrse_table():
   pass
 
+def random_delay(a,b):
+	time.sleep(random.uniform(a,b))
+	return
+
 
 def open_child_job(url):
 
@@ -134,6 +143,7 @@ def bundle_work(page_num):
   links = find_job_list(soup)
 
   for l in links:
+  	random_delay(DELAY_A, DELAY_B)
     open_child_job(l)
   
   return soup, links
