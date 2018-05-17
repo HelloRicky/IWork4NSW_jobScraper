@@ -184,9 +184,11 @@ def open_child_job(url, proxy_list, user_agent_list):
     
     ## in case there is li element
     td = row.find("td")
-    li = td.find("li")
+    li = td.find_all("li")
     if li:
-      td = (li.contents)[0]
+      li = filter(None, li)
+      td_vals = [(l.contents)[0] for l in li if l.contents]
+      td = '||'.join(td_vals)
     else:
       td = (td.contents)[0]
 
