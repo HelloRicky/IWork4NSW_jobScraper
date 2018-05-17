@@ -10,7 +10,7 @@ import traceback
 
 
 """
-	get available free proxy that
+	return set of available free proxies that
 	Https: available to Https, Yes
 	type: anonyous and elite
 
@@ -36,5 +36,27 @@ def get_proxies():
 
 	return proxies
 
+"""
+	return set of the very common user agent of Chrome, Firefox and safari
+"""
+def get_useragents():
+	browser_list = [
+		"https://developers.whatismybrowser.com/useragents/explore/software_name/chrome/",
+		"https://developers.whatismybrowser.com/useragents/explore/software_name/firefox/",
+		"https://developers.whatismybrowser.com/useragents/explore/software_name/safari/"
+
+	]
+	useragents = set()
+	for browser in browser_list:
+		response = requests.get(browser)
+		parser = fromstring(response.text)
+		for i in parser.xpath('//tbody/tr'):
+			if i.xpath('.//td[5][contains(text(), "Very")]'):
+				agent = i.xpath('.//td[1]/a/text()')[0]
+				useragents.add(agent)
+
+	return useragents
+
 if __name__ == "__main__":
 	print(len(get_proxies()))
+
