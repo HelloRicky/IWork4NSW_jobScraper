@@ -1,16 +1,29 @@
+"""
+Author: Ricky ZHENG
+
+use this program to scrap open position in IWORKNSW
+aim for $100k+ positions in NSW
+
+Technique invovled:
+  - webscrapping with BeautifulSoup
+  - Selenium for headerless browser simulation
+  - use multiple ip with proxie (anonmous, Elite)
+  - use multiple user-agents to avoid ban from frequent scrapping
+
+"""
 from __future__ import print_function
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from collections import defaultdict
 from bs4 import BeautifulSoup
+import scrapy_helper as schp
+from math import ceil
+import requests
 import random
 import time
-import requests
-from math import ceil
-import scrapy_helper as schp
-from collections import defaultdict
 import csv
 
 ## initial
