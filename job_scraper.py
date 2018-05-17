@@ -7,8 +7,9 @@ from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
 import random
 import time
-import urllib2
+import requests
 from math import ceil
+import scrapy_helper as schp
 from collections import defaultdict
 
 ## initial
@@ -111,12 +112,14 @@ def random_delay(a,b):
 	return
 
 
-def open_child_job(url):
+
+def open_child_job(url, proxy, user_agent):
 
   ## pattern
   pat_title = ("h1", "job-detail-title")
-  
-  html = urllib2.urlopen(url)
+
+  headers = {'User-Agent': user_agent}
+  html = requests.get(url, headers=headers, proxies={"http":proxy, "https:":proxy})
   # use different method with differnt os
   soup = BeautifulSoup(html, "lxml")            #windows
   #soup = BeautifulSoup(html, "html.parser")    #mac/linux
@@ -156,10 +159,20 @@ def bundle_work(page_num):
 
   links = find_job_list(soup)
 
+  ## get proxy and user-agent
+  proxy_set = schp.get_proxies()
+  agent_set = schp.get_useragents()
+
+
   for l in links:
     #print(l)
   	random_delay(DELAY_A, DELAY_B)
-    result = open_child_job(l)
+
+    ## random choose one from both set
+    proxy = random.sample(proxy_set, 1)[0]
+    user_agent = random.sample(agent_set, 1)[0]
+
+    result = open_child_job(l, proxy, user_agent)
     final_data.append(result)
   
   return final_data, soup, links
