@@ -176,7 +176,7 @@ def bundle_work(page_num):
 
   for l in links:
     #print(l)
-  	random_delay(DELAY_A, DELAY_B)
+  	#random_delay(DELAY_A, DELAY_B)
 
     ## random choose one from both set, 
     ## provide 3 sample for invalid set backup
