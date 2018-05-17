@@ -45,7 +45,8 @@ prefix_url = "https://iworkfor.nsw.gov.au/jobs/all-keywords/all-agencies/all-org
 
 ## browser set up
 #CHROME_LOCATION = "C:/Users/rfzheng/Desktop/1/chromedriver_win32/chromedriver"
-CHROME_LOCATION = "/home/eutility2/Projects/chromedriver"
+#CHROME_LOCATION = "/home/eutility2/Projects/chromedriver"
+CHROME_LOCATION = "/Users/ricky/Projects/chromedriver"
 option = webdriver.ChromeOptions()
 option.add_argument("-incognito")
 
@@ -181,7 +182,14 @@ def open_child_job(url, proxy_list, user_agent_list):
     th = th.encode('ascii', 'ignore')
     th = th.replace("\r\n", "").strip() # refine string
     
-    td = (row.find("td").contents)[0]
+    ## in case there is li element
+    td = row.find("td")
+    li = td.find("li")
+    if li:
+      td = (li.contents)[0]
+    else:
+      td = (td.contents)[0]
+
     td = unicode(td)
     td = td.encode('ascii', 'ignore')
     td = td.replace("\r\n", "").strip() # refine string
@@ -207,7 +215,7 @@ def bundle_work(page_num):
   agent_set = schp.get_useragents()
 
 
-  for l in links:
+  for l in range(len(links)):
     #print(l)
   	#random_delay(DELAY_A, DELAY_B)
 
@@ -216,7 +224,9 @@ def bundle_work(page_num):
     proxy = random.sample(proxy_set, 3)
     user_agent = random.sample(agent_set, 3)
 
-    result = open_child_job(l, proxy, user_agent)
+    print(l+1, "/", len(links), end=" ")
+    link = links[l]
+    result = open_child_job(link, proxy, user_agent)
     final_data.append(result)
   
   return final_data, soup, links
