@@ -30,7 +30,8 @@ prefix_url = "https://iworkfor.nsw.gov.au/jobs/all-keywords/all-agencies/all-org
 
 
 ## browser set up
-CHROME_LOCATION = "C:/Users/rfzheng/Desktop/1/chromedriver_win32/chromedriver"
+#CHROME_LOCATION = "C:/Users/rfzheng/Desktop/1/chromedriver_win32/chromedriver"
+CHROME_LOCATION = "/home/eutility2/Projects/chromedriver"
 option = webdriver.ChromeOptions()
 option.add_argument("-incognito")
 
@@ -87,8 +88,9 @@ def open_browser(url):
     
     html = browser.page_source
     # use different method with differnt os
-    soup = BeautifulSoup(html, "lxml")            #windows
-    #soup = BeautifulSoup(html, "html.parser")    #mac/linux
+    #soup = BeautifulSoup(html, "lxml")            #windows
+    soup = BeautifulSoup(html, "html.parser")    #mac/linux
+
 
     browser.quit()  
     
@@ -124,7 +126,9 @@ def open_child_job(url, proxy_list, user_agent_list):
     try:
       headers = {'User-Agent': user_agent_list[i]}
       proxy = proxy_list[i]
-      html = requests.get(url, headers=headers, proxies={"http":proxy, "https:":proxy})
+      result = requests.get(url, headers=headers, proxies={"http":proxy, "https:":proxy})
+      html = result.content
+      #print("successful requests!")
       break
     except Exception, e:
       pass
@@ -133,11 +137,14 @@ def open_child_job(url, proxy_list, user_agent_list):
   # use different method with differnt os
   soup = BeautifulSoup(html, "lxml")            #windows
   #soup = BeautifulSoup(html, "html.parser")    #mac/linux
+  #soup = BeautifulSoup(html)
 
   result = defaultdict()
 
   ## title
-  job_title = str((soup.find(pat_title[0], class_=pat_title[1]).contents)[0])
+  job_title = (soup.find(pat_title[0], class_=pat_title[1]).contents)[0]
+  job_title = unicode(job_title)
+  job_title = job_title.encode('ascii', 'ignore')
   job_title = job_title.replace("\r\n", "").strip() # refine string
 
   result['job_title'] = job_title
@@ -147,10 +154,14 @@ def open_child_job(url, proxy_list, user_agent_list):
   table = soup.find("table", class_ = "table table-striped")
   for row in table.find_all("tr"):
     ###th, td
-    th = str((row.find("th").contents)[0])
+    th = (row.find("th").contents)[0]
+    th = unicode(th)
+    th = th.encode('ascii', 'ignore')
     th = th.replace("\r\n", "").strip() # refine string
     
-    td = str((row.find("td").contents)[0])
+    td = (row.find("td").contents)[0]
+    td = unicode(td)
+    td = td.encode('ascii', 'ignore')
     td = td.replace("\r\n", "").strip() # refine string
 
     result[th]=td
