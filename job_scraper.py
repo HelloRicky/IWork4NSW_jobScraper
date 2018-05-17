@@ -119,9 +119,9 @@ def open_browser(url):
   return soup
 
 def save_result(data, file_name):
-  keys = data[0].keys()
+  all_keys = set().union(*(d.keys() for d in data))
   with open(file_name, 'wb') as f:
-  	dict_writer = csv.DictWriter(f, keys)
+  	dict_writer = csv.DictWriter(f, list(all_keys))
   	dict_writer.writeheader()
   	dict_writer.writerows(data)
 
