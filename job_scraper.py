@@ -39,7 +39,7 @@ option.add_argument("-incognito")
 def main(bln_allPages=False):
 
   ## first page
-  soup, links = bundle_work(START_PAGE)
+  final_data, soup, links = bundle_work(START_PAGE)
   
   ## get reset of page
   if bln_allPages:
@@ -49,7 +49,7 @@ def main(bln_allPages=False):
     for i in range(START_PAGE + 1, max_page_num + 1):
       soup, links = bundle_work(i)
 
-  return soup, links
+  return final_data, soup, links
 
 def get_max_page(soup):
   ## get total number of jobs and total number of pages
@@ -85,7 +85,10 @@ def open_browser(url):
     print("Page is ready!")
     
     html = browser.page_source
-    soup = BeautifulSoup(html, "lxml")
+    # use different method with differnt os
+    soup = BeautifulSoup(html, "lxml")            #windows
+    #soup = BeautifulSoup(html, "html.parser")    #mac/linux
+
     browser.quit()  
     
   except TimeoutException:
@@ -114,7 +117,10 @@ def open_child_job(url):
   pat_title = ("h1", "job-detail-title")
   
   html = urllib2.urlopen(url)
-  soup = BeautifulSoup(html, "lxml")
+  # use different method with differnt os
+  soup = BeautifulSoup(html, "lxml")            #windows
+  #soup = BeautifulSoup(html, "html.parser")    #mac/linux
+
   result = defaultdict()
 
   ## title
@@ -126,16 +132,24 @@ def open_child_job(url):
   
   ## table
   table = soup.find("table", class_ = "table table-striped")
-  for row in table.findAll("tr"):
+  for row in table.find_all("tr"):
     ###th, td
-    rows.append(row)
-  
+    th = str((row.find("th").contents)[0])
+    th = th.replace("\r\n", "").strip() # refine string
+    
+    td = str((row.find("td").contents)[0])
+    td = td.replace("\r\n", "").strip() # refine string
+
+    result[th]=td
+    
   print(job_title)
-  
+  return result
 
 def bundle_work(page_num):
   url = prefix_url + str(page_num)
   soup = open_browser(url)
+  final_data = []
+
   if soup == None:
     print("Fail to open browser:", url)
     return
@@ -143,10 +157,12 @@ def bundle_work(page_num):
   links = find_job_list(soup)
 
   for l in links:
+    #print(l)
   	random_delay(DELAY_A, DELAY_B)
-    open_child_job(l)
+    result = open_child_job(l)
+    final_data.append(result)
   
-  return soup, links
+  return final_data, soup, links
 
 
 def find_job_list(soup):
@@ -165,4 +181,4 @@ def find_job_list(soup):
 
 
 if __name__ == "__main__":
-  soup, links = main()
+  final_data, soup, links = main()
