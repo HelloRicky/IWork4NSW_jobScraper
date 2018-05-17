@@ -113,13 +113,23 @@ def random_delay(a,b):
 
 
 
-def open_child_job(url, proxy, user_agent):
+def open_child_job(url, proxy_list, user_agent_list):
 
   ## pattern
   pat_title = ("h1", "job-detail-title")
+  html=None
 
-  headers = {'User-Agent': user_agent}
-  html = requests.get(url, headers=headers, proxies={"http":proxy, "https:":proxy})
+  ## retry requests with different combo (proxy and agent)
+  for i in range(len(proxy_list)):
+    try:
+      headers = {'User-Agent': user_agent_list[i]}
+      proxy = proxy_list[i]
+      html = requests.get(url, headers=headers, proxies={"http":proxy, "https:":proxy})
+      break
+    except Exception, e:
+      pass
+
+
   # use different method with differnt os
   soup = BeautifulSoup(html, "lxml")            #windows
   #soup = BeautifulSoup(html, "html.parser")    #mac/linux
@@ -168,9 +178,10 @@ def bundle_work(page_num):
     #print(l)
   	random_delay(DELAY_A, DELAY_B)
 
-    ## random choose one from both set
-    proxy = random.sample(proxy_set, 1)[0]
-    user_agent = random.sample(agent_set, 1)[0]
+    ## random choose one from both set, 
+    ## provide 3 sample for invalid set backup
+    proxy = random.sample(proxy_set, 3)
+    user_agent = random.sample(agent_set, 3)
 
     result = open_child_job(l, proxy, user_agent)
     final_data.append(result)
