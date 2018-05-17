@@ -49,7 +49,7 @@ def main(bln_allPages=False):
     max_page_num = get_max_page(soup)
 
     for i in range(START_PAGE + 1, max_page_num + 1):
-      soup, links = bundle_work(i)
+      final_data, soup, links = bundle_work(i)
 
   return final_data, soup, links
 
