@@ -56,6 +56,7 @@ option.add_argument("-incognito")
 def main(bln_allPages=False):
 
   ## first page
+  print("working on page", START_PAGE, end="...")
   final_data, soup, links = bundle_work(START_PAGE)
   # save result
   save_result(final_data, '{}.csv'.format(START_PAGE))
@@ -66,10 +67,11 @@ def main(bln_allPages=False):
     max_page_num = get_max_page(soup)
 
     for i in range(START_PAGE + 1, max_page_num + 1):
+      print("working on page", i, end="...")
       final_data, soup, links = bundle_work(i)
 
       # save result
-      pass
+      save_result(final_data, '{}.csv'.format(i))
   return final_data, soup, links
 
 def get_max_page(soup):
@@ -81,7 +83,7 @@ def get_max_page(soup):
   total_result = int(txt.split()[0])
   total_page = int(ceil(total_result/(1.0*PAGESIZE)))
 
-  return total_result, total_page
+  return total_page
   
 
 
