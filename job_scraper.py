@@ -11,6 +11,7 @@ import requests
 from math import ceil
 import scrapy_helper as schp
 from collections import defaultdict
+import csv
 
 ## initial
 START_PAGE=1
@@ -42,6 +43,8 @@ def main(bln_allPages=False):
 
   ## first page
   final_data, soup, links = bundle_work(START_PAGE)
+  # save result
+  save_result(final_data, '{}.csv'.format(START_PAGE))
   
   ## get reset of page
   if bln_allPages:
@@ -51,6 +54,8 @@ def main(bln_allPages=False):
     for i in range(START_PAGE + 1, max_page_num + 1):
       final_data, soup, links = bundle_work(i)
 
+      # save result
+      pass
   return final_data, soup, links
 
 def get_max_page(soup):
@@ -100,8 +105,12 @@ def open_browser(url):
   
   return soup
 
-def save_result():
-  pass
+def save_result(data, file_name):
+  keys = data[0].keys()
+  with open(file_name, 'wb') as f:
+  	dict_writer = csv.DictWriter(f, keys)
+  	dict_writer.writeheader()
+  	dict_writer.writerows(data)
 
 def parse_title():
   pass
